@@ -126,6 +126,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jProgressBar1.setForeground(new java.awt.Color(0, 0, 255));
         jProgressBar1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jProgressBar1MouseClicked(evt);
@@ -307,7 +308,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -497,7 +498,25 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                 haspause = true;
             }
         } else {
-            play_onl();
+            if (playing == false){
+                if (haspause == false){
+                    play_onl();
+                    playing = true;
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                }
+                else{
+                    play_onl.resume();
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                    haspause = false;
+                    playing = true;
+                }
+            } else{
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
+                playing = false;
+                play_onl.pause();
+                haspause = true;
+            }
+            
         }
     }//GEN-LAST:event_btn_playActionPerformed
 
@@ -507,6 +526,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
         } else {
             String bai = listURL.get(index);
+            this.bai = index;
 
 //         Te playsearch = new PausablePlayer();
             if (queryThread != null && queryThread.isAlive()) {
@@ -525,6 +545,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
     private void btn_mixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_mixActionPerformed
         // TODO add your handling code here:
+        play_onl.resume();
     }//GEN-LAST:event_btn_mixActionPerformed
 
     private void inputNameSong_onlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputNameSong_onlActionPerformed
@@ -591,7 +612,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
     private void btn_volumeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volumeActionPerformed
         // TODO add your handling code here:
-        MC.resume();
+        play_onl.pause();
     }//GEN-LAST:event_btn_volumeActionPerformed
 
     private void btn_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_stopActionPerformed
@@ -623,6 +644,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             if (row == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
             } else if (haspause == false) {
+                tableSong.setRowSelectionInterval(row, row);
                 MC.play(ListSong.get(row));
                 File ftmp = new File(ListSong.get(row));
                 String name = ftmp.getName().toString();
@@ -660,6 +682,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             if (row == -1) {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
             } else if (haspause == false) {
+                tableSong.setRowSelectionInterval(row, row);
                 MC.play(ListSong.get(row));
                 File ftmp = new File(ListSong.get(row));
                 String name = ftmp.getName().toString();

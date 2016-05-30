@@ -41,6 +41,7 @@ public class getMusic {
     public static int end;
     public long time;
     public int daphat;
+    private Thread threadtime;
 
     public getMusic() {
         bsplayer = new BasicPlayer();
@@ -71,9 +72,12 @@ public class getMusic {
             try {
                 pauselocation = FIS.available();
                 player.close();
+                threadtime.suspend();
+                System.out.println("time: " + time);
             } catch (IOException ex) {
                 Logger.getLogger(getMusic.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
         }
 
     }
@@ -102,7 +106,7 @@ public class getMusic {
             Logger.getLogger(getMusic.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        new Thread() {
+        threadtime = new Thread() {
             @Override
             public void run() {
                 super.run(); //To change body of generated methods, choose Tools | Templates.
@@ -110,7 +114,7 @@ public class getMusic {
                 int d = sec / 100;
                 daphat = 0;
                 int pro = 1;
-                for(int i = 0; i< sec ;++i){
+                for(int i = daphat; i< sec ;++i){
                     try {
                         sleep(1000);
                     } catch (InterruptedException ex) {
@@ -126,8 +130,10 @@ public class getMusic {
                
                 //this.setPriority(1);
             }
-        }.start();
-
+        
+        };
+        threadtime.start();
+        
         new Thread() {
             @Override
             public void run() {
@@ -149,6 +155,7 @@ public class getMusic {
             }
 
         }.start();
+        
 
     }
 
@@ -158,6 +165,7 @@ public class getMusic {
             BIS = new BufferedInputStream(FIS);
             FIS.skip(totallong - pauselocation);
             player = new Player(BIS);
+            threadtime.resume();
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(getMusic.class.getName()).log(Level.SEVERE, null, ex);
