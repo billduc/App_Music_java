@@ -5,23 +5,25 @@
  */
 package app_music;
 
-import java.awt.Image;
 import java.io.File;
-import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
+import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jlgui.basicplayer.BasicController;
 import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  *
@@ -39,7 +41,14 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     private getMusic MC = new getMusic();
     public static boolean playing;
     public static boolean haspause;
-
+    int bai = -1;
+    private ArrayList<String> listURL;
+    private ArrayList<String> listName;
+    private Boolean off;
+    private Testplay play_onl = new Testplay();
+    public static Thread queryThread;
+    private getMussicJL bsplay = new getMussicJL();
+    
     public Player_Music() {
         initComponents();
         this.setIconImage(new ImageIcon(getClass().getResource("/img/music-1.png")).getImage());
@@ -117,6 +126,12 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jProgressBar1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jProgressBar1MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -130,7 +145,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -140,9 +155,19 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
         btn_left.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Previous-icon.png"))); // NOI18N
         btn_left.setBorder(null);
+        btn_left.setBorderPainted(false);
+        btn_left.setContentAreaFilled(false);
+        btn_left.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_leftActionPerformed(evt);
+            }
+        });
 
+        btn_play.setBackground(new java.awt.Color(255, 255, 255));
         btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png"))); // NOI18N
         btn_play.setBorder(null);
+        btn_play.setBorderPainted(false);
+        btn_play.setContentAreaFilled(false);
         btn_play.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_playActionPerformed(evt);
@@ -151,9 +176,18 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
         btn_right.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Next-icon.png"))); // NOI18N
         btn_right.setBorder(null);
+        btn_right.setBorderPainted(false);
+        btn_right.setContentAreaFilled(false);
+        btn_right.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_rightActionPerformed(evt);
+            }
+        });
 
-        btn_stop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Stop-icon.png"))); // NOI18N
+        btn_stop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Stop-icon (1).png"))); // NOI18N
         btn_stop.setBorder(null);
+        btn_stop.setBorderPainted(false);
+        btn_stop.setContentAreaFilled(false);
         btn_stop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_stopActionPerformed(evt);
@@ -192,7 +226,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        btn_volume.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/technology.png"))); // NOI18N
+        btn_volume.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Actions-player-volume-icon.png"))); // NOI18N
         btn_volume.setBorder(null);
         btn_volume.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -326,6 +360,8 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         btn_opent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/music-folder.png"))); // NOI18N
         btn_opent.setToolTipText("Opent File");
         btn_opent.setBorder(null);
+        btn_opent.setBorderPainted(false);
+        btn_opent.setContentAreaFilled(false);
         btn_opent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_opentActionPerformed(evt);
@@ -350,6 +386,17 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         inputNameSong_onl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputNameSong_onlActionPerformed(evt);
+            }
+        });
+        inputNameSong_onl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputNameSong_onlKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                inputNameSong_onlKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                inputNameSong_onlKeyTyped(evt);
             }
         });
 
@@ -423,33 +470,58 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
     private void btn_playActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_playActionPerformed
         // TODO add your handling code here:
-        int row = tableSong.getSelectedRow();
-        if (playing == false) {
-            if (row == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
-            } else if (haspause == false) {
-                MC.play(ListSong.get(row));
-                File ftmp = new File(ListSong.get(row));
-                String name = ftmp.getName().toString();
-                txtNameSong.setText(name);
-                playing = true;
-                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
-            }
-            else{
-                MC.resume();
-                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
-                haspause = false;
-                playing = true;
+        if (off) {
+            int row = tableSong.getSelectedRow();
+            if (playing == false) {
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+                } else if (haspause == false) {
+                    bai = row;
+                    MC.play(ListSong.get(row));
+                    //MC.bsplay(ListSong.get(row));
+                    File ftmp = new File(ListSong.get(row));
+                    String name = ftmp.getName().toString();
+                    txtNameSong.setText(name);
+                    playing = true;
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                } else {
+                    MC.resume();
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                    haspause = false;
+                    playing = true;
+                }
+            } else {
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
+                playing = false;
+                MC.Pause();
+                haspause = true;
             }
         } else {
-            btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
-            playing = false;
-            MC.Pause();
-            haspause = true;
+            play_onl();
         }
-
-
     }//GEN-LAST:event_btn_playActionPerformed
+
+    private void play_onl() {
+        int index = tableSong.getSelectedRow();
+        if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+        } else {
+            String bai = listURL.get(index);
+
+//         Te playsearch = new PausablePlayer();
+            if (queryThread != null && queryThread.isAlive()) {
+                queryThread.stop();
+            }
+
+            queryThread = new Thread() {
+                public void run() {
+                    play_onl.play(bai);
+                }
+            };
+            System.out.println(queryThread);
+            queryThread.start();
+        }
+    }
 
     private void btn_mixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_mixActionPerformed
         // TODO add your handling code here:
@@ -461,14 +533,50 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
     private void btnSearch_onlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearch_onlActionPerformed
         // TODO add your handling code here:
+        search_onl();
+        off = false;
     }//GEN-LAST:event_btnSearch_onlActionPerformed
 
+    private void search_onl() {
+        String textSearch = inputNameSong_onl.getText();
+        HttpURLConnectionExample http = new HttpURLConnectionExample();
+        String jsonui = null;
+        try {
+            jsonui = http.sendGet(textSearch);
+        } catch (Exception ex) {
+            Logger.getLogger(Player_Music.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
+        try {
+            System.out.println(jsonui);
+            Object obj = parser.parse(jsonui);
+            JSONArray array = (JSONArray) obj;
+            int larray = array.size();
+
+            listURL = new ArrayList<>();
+            listName = new ArrayList<>();
+            DefaultTableModel tbmode = (DefaultTableModel) tableSong.getModel();
+            tbmode.getDataVector().removeAllElements();
+            for (int i = 0; i < larray; i++) {
+                JSONObject obj2 = (JSONObject) array.get(i);
+                listURL.add(obj2.get("LinkSong").toString());
+                listName.add(obj2.get("TenSong").toString() + " - " + obj2.get("CaSi").toString());
+                //System.out.println(listName.get(i));
+                tbmode.addRow(new Object[]{i + 1, listName.get(i)});
+            }
+        } catch (org.json.simple.parser.ParseException pe) {
+
+            System.out.println("position: " + pe.getPosition());
+            System.out.println(pe);
+        }
+    }
     private void btn_opentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_opentActionPerformed
         // TODO add your handling code here:
+        off = true;
         String[] listPath = getfile.getListSong("Archivos MP3", "mp3");
         ListSong.addAll(Arrays.asList(listPath));
         DefaultTableModel tablemode = (DefaultTableModel) tableSong.getModel();
-
+        tablemode.getDataVector().removeAllElements();
         File ftg;
         for (int i = 0; i < ListSong.size(); ++i) {
             ftg = new File(ListSong.get(i));
@@ -488,8 +596,103 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
     private void btn_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_stopActionPerformed
         // TODO add your handling code here:
-        MC.Stop();
+        if (off)
+            MC.Stop();
+        else
+            play_onl.Stop();
     }//GEN-LAST:event_btn_stopActionPerformed
+
+    private void jProgressBar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jProgressBar1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jProgressBar1MouseClicked
+
+    private void btn_rightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_rightActionPerformed
+        // TODO add your handling code here:
+        System.out.println("toi " + bai);
+        MC.Stop();
+        int row = -1;
+        if (bai < tableSong.getRowCount() - 1) {
+            bai++;
+            row = bai;
+        } else {
+            bai = 0;
+            row = 0;
+        }
+        System.out.println("toi " + row);
+        if (playing == false) {
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+            } else if (haspause == false) {
+                MC.play(ListSong.get(row));
+                File ftmp = new File(ListSong.get(row));
+                String name = ftmp.getName().toString();
+                txtNameSong.setText(name);
+                playing = true;
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+            } else {
+                MC.resume();
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                haspause = false;
+                playing = true;
+            }
+        } else {
+            btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
+            playing = false;
+            MC.Pause();
+            haspause = true;
+        }
+    }//GEN-LAST:event_btn_rightActionPerformed
+
+    private void btn_leftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_leftActionPerformed
+        // TODO add your handling code here:
+        MC.Stop();
+        int row = -1;
+        System.out.println("lui " + bai);
+        if (bai > 1) {
+            bai--;
+            row = bai;
+        } else {
+            row = tableSong.getRowCount() - 1;
+            bai = row;
+        }
+        System.out.println("lui " + bai);
+        if (playing == false) {
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+            } else if (haspause == false) {
+                MC.play(ListSong.get(row));
+                File ftmp = new File(ListSong.get(row));
+                String name = ftmp.getName().toString();
+                txtNameSong.setText(name);
+                playing = true;
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+            } else {
+                MC.resume();
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                haspause = false;
+                playing = true;
+            }
+        } else {
+            btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
+            playing = false;
+            MC.Pause();
+            haspause = true;
+        }
+    }//GEN-LAST:event_btn_leftActionPerformed
+
+    private void inputNameSong_onlKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputNameSong_onlKeyPressed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_inputNameSong_onlKeyPressed
+
+    private void inputNameSong_onlKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputNameSong_onlKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inputNameSong_onlKeyTyped
+
+    private void inputNameSong_onlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputNameSong_onlKeyReleased
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_inputNameSong_onlKeyReleased
 
     /**
      * @param args the command line arguments
@@ -562,7 +765,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JProgressBar jProgressBar1;
+    public static javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
