@@ -34,6 +34,9 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     /**
      * Creates new form Player_Music
      */
+    public static boolean ok_volume = true;
+    public static boolean ok_mix = true;
+    public static boolean ok_repeat = true;
     private getFile getfile = new getFile();
     private processMussic player = new processMussic();
     private ArrayList<String> ListSong = new ArrayList<>();
@@ -51,6 +54,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     public static Thread queryThread;
     private getMussicJL bsplay = new getMussicJL();
     org.json.simple.parser.JSONParser parser = new org.json.simple.parser.JSONParser();
+
     public Player_Music() {
         initComponents();
         this.setIconImage(new ImageIcon(getClass().getResource("/img/music-1.png")).getImage());
@@ -73,6 +77,8 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         txtNameSong = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        btndown = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jPanel5 = new javax.swing.JPanel();
@@ -81,7 +87,6 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         btn_play = new javax.swing.JButton();
         btn_right = new javax.swing.JButton();
         btn_stop = new javax.swing.JButton();
-        jPanel6 = new javax.swing.JPanel();
         btn_volume = new javax.swing.JButton();
         btn_mix = new javax.swing.JButton();
         btn_repeat = new javax.swing.JButton();
@@ -101,35 +106,57 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         jScrollPane2.setViewportView(jEditorPane1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Iplayer");
+        setLocationByPlatform(true);
         setResizable(false);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jPanel2.setFocusable(false);
 
         txtNameSong.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
         txtNameSong.setForeground(new java.awt.Color(0, 51, 255));
         txtNameSong.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/compact-disc.png"))); // NOI18N
+
+        btndown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/download.png"))); // NOI18N
+        btndown.setToolTipText("Download");
+        btndown.setBorder(null);
+        btndown.setContentAreaFilled(false);
+        btndown.setEnabled(false);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(txtNameSong, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(txtNameSong, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btndown, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtNameSong)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(txtNameSong, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(btndown, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jProgressBar1.setForeground(new java.awt.Color(0, 0, 255));
         jProgressBar1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -155,9 +182,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         btn_left.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Previous-icon.png"))); // NOI18N
         btn_left.setBorder(null);
@@ -199,99 +224,82 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             }
         });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(btn_left)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btn_play)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btn_right)
-                .addGap(18, 18, 18)
-                .addComponent(btn_stop)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn_left)
-                    .addComponent(btn_stop)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btn_play)
-                        .addGroup(jPanel4Layout.createSequentialGroup()
-                            .addGap(16, 16, 16)
-                            .addComponent(btn_right))))
-                .addGap(40, 40, 40))
-        );
-
-        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-
-        btn_volume.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Actions-player-volume-icon.png"))); // NOI18N
+        btn_volume.setBackground(new java.awt.Color(0, 0, 0));
+        btn_volume.setForeground(new java.awt.Color(255, 255, 255));
+        btn_volume.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/speaker.png"))); // NOI18N
         btn_volume.setBorder(null);
+        btn_volume.setContentAreaFilled(false);
+        btn_volume.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btn_volume.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_volumeActionPerformed(evt);
             }
         });
 
-        btn_mix.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/interface-7.png"))); // NOI18N
+        btn_mix.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/shuffle1.png"))); // NOI18N
         btn_mix.setBorder(null);
+        btn_mix.setContentAreaFilled(false);
         btn_mix.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_mixActionPerformed(evt);
             }
         });
 
-        btn_repeat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/interface-3.png"))); // NOI18N
+        btn_repeat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reload.png"))); // NOI18N
         btn_repeat.setBorder(null);
+        btn_repeat.setContentAreaFilled(false);
+        btn_repeat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_repeatActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btn_volume)
+                .addComponent(btn_left)
+                .addGap(14, 14, 14)
+                .addComponent(btn_play)
+                .addGap(14, 14, 14)
+                .addComponent(btn_right)
+                .addGap(22, 22, 22)
+                .addComponent(btn_stop)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(btn_volume, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_mix)
                 .addGap(18, 18, 18)
                 .addComponent(btn_repeat)
-                .addContainerGap(18, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_repeat)
-                    .addComponent(btn_mix)
-                    .addComponent(btn_volume))
                 .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_right)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(btn_stop)
+                        .addComponent(btn_volume)
+                        .addComponent(btn_mix)
+                        .addComponent(btn_repeat))
+                    .addComponent(btn_left)
+                    .addComponent(btn_play))
+                .addGap(40, 40, 40))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -316,8 +324,8 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder("Danh Sách"));
@@ -351,16 +359,16 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 147, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 357, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Nghe nhạc offline"));
 
         btn_opent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/music-folder.png"))); // NOI18N
         btn_opent.setToolTipText("Opent File");
@@ -379,7 +387,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(btn_opent, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 206, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -406,7 +414,9 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         });
 
         btnSearch_onl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/search.png"))); // NOI18N
+        btnSearch_onl.setToolTipText("search");
         btnSearch_onl.setBorder(null);
+        btnSearch_onl.setContentAreaFilled(false);
         btnSearch_onl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSearch_onlActionPerformed(evt);
@@ -424,12 +434,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
         tablePlaylist.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null},
-                {null},
-                {null}
+
             },
             new String [] {
                 "Danh sách playlist"
@@ -450,14 +455,13 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(inputNameSong_onl, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnSearch_onl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel1)))
-                    .addComponent(selectPlaylist, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 187, Short.MAX_VALUE)
+                        .addComponent(jLabel1))
+                    .addComponent(selectPlaylist, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(inputNameSong_onl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSearch_onl, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
@@ -474,12 +478,12 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                     .addComponent(btnSearch_onl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(inputNameSong_onl, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(selectPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(selectPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                     .addGap(82, 82, 82)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -489,26 +493,25 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -519,12 +522,15 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     private void btn_playActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_playActionPerformed
         // TODO add your handling code here:
         if (off) {
+            btndown.setEnabled(false);
             int row = tableSong.getSelectedRow();
             if (playing == false) {
                 if (row == -1) {
                     JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
                 } else if (haspause == false) {
                     bai = row;
+                    MC.Stop();
+                    play_onl.Stop();
                     MC.play(ListSong.get(row));
                     //MC.bsplay(ListSong.get(row));
                     File ftmp = new File(ListSong.get(row));
@@ -545,59 +551,40 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                 haspause = true;
             }
         } else {
-            if (playing == false){
-                if (haspause == false){
-                    play_onl();
-                    playing = true;
-                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
-                }
-                else{
+            btndown.setEnabled(true);
+
+            if (playing == false) {
+                if (haspause == false) {
+                    //play_onl();
+                    int index = tableSong.getSelectedRow();
+                    if (index == -1) {
+                        JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+                    } else {
+                        String bail = listURL.get(index);
+                        String name = tableSong.getValueAt(index, 1).toString();
+                        txtNameSong.setText(name);
+                        this.bai = index;
+                        
+                        System.err.println(bail);
+                        play_onl.play(bail);
+                        playing = true;
+                        btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                    }
+                } else {
                     play_onl.resume();
                     btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
                     haspause = false;
                     playing = true;
                 }
-            } else{
+            } else {
                 btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
                 playing = false;
                 play_onl.pause();
                 haspause = true;
             }
-            
         }
     }//GEN-LAST:event_btn_playActionPerformed
 
-    private void play_onl() {
-        int index = tableSong.getSelectedRow();
-        if (index == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
-        } else {
-            String bai = listURL.get(index);
-
-            this.bai = index;
-
-            System.err.println(bai);
-
-
-//         Te playsearch = new PausablePlayer();
-            if (queryThread != null && queryThread.isAlive()) {
-                queryThread.stop();
-            }
-
-            queryThread = new Thread() {
-                public void run() {
-                    play_onl.play(bai);
-                }
-            };
-            System.out.println(queryThread);
-            queryThread.start();
-        }
-    }
-
-    private void btn_mixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_mixActionPerformed
-        // TODO add your handling code here:
-        play_onl.resume();
-    }//GEN-LAST:event_btn_mixActionPerformed
 
     private void inputNameSong_onlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputNameSong_onlActionPerformed
         // TODO add your handling code here:
@@ -607,6 +594,10 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         // TODO add your handling code here:
         search_onl();
         off = false;
+        playing = false;
+        haspause = false;
+        MC.Stop();
+        play_onl.Stop();
     }//GEN-LAST:event_btnSearch_onlActionPerformed
 
     private void search_onl() {
@@ -643,15 +634,19 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     }
     private void btn_opentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_opentActionPerformed
         // TODO add your handling code here:
-        off = true;
         String[] listPath = getfile.getListSong("Archivos MP3", "mp3");
-        ListSong.addAll(Arrays.asList(listPath));
-        DefaultTableModel tablemode = (DefaultTableModel) tableSong.getModel();
-        tablemode.getDataVector().removeAllElements();
-        File ftg;
-        for (int i = 0; i < ListSong.size(); ++i) {
-            ftg = new File(ListSong.get(i));
-            tablemode.addRow(new Object[]{i + 1, ftg.getName().substring(0, ftg.getName().length() - 4)});
+        if (listPath.length > 0) {
+            off = true;
+            MC.Stop();
+            play_onl.Stop();
+            ListSong.addAll(Arrays.asList(listPath));
+            DefaultTableModel tablemode = (DefaultTableModel) tableSong.getModel();
+            tablemode.getDataVector().removeAllElements();
+            File ftg;
+            for (int i = 0; i < ListSong.size(); ++i) {
+                ftg = new File(ListSong.get(i));
+                tablemode.addRow(new Object[]{i + 1, ftg.getName().substring(0, ftg.getName().length() - 4)});
+            }
         }
 
 //        for(int i = 0; i < listPath.length; ++i )
@@ -660,17 +655,13 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         System.out.println(f.getName());
     }//GEN-LAST:event_btn_opentActionPerformed
 
-    private void btn_volumeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volumeActionPerformed
-        // TODO add your handling code here:
-        play_onl.pause();
-    }//GEN-LAST:event_btn_volumeActionPerformed
-
     private void btn_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_stopActionPerformed
         // TODO add your handling code here:
-        if (off)
+        if (off) {
             MC.Stop();
-        else
+        } else {
             play_onl.Stop();
+        }
     }//GEN-LAST:event_btn_stopActionPerformed
 
     private void jProgressBar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jProgressBar1MouseClicked
@@ -679,6 +670,9 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
 
     private void btn_rightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_rightActionPerformed
         // TODO add your handling code here:
+        playing = false;
+        haspause = false;
+        play_onl.Stop();
         System.out.println("toi " + bai);
         MC.Stop();
         int row = -1;
@@ -690,19 +684,52 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             row = 0;
         }
         System.out.println("toi " + row);
-        if (playing == false) {
-            if (row == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
-            } else if (haspause == false) {
-                tableSong.setRowSelectionInterval(row, row);
-                MC.play(ListSong.get(row));
-                File ftmp = new File(ListSong.get(row));
-                String name = ftmp.getName().toString();
-                txtNameSong.setText(name);
-                playing = true;
-                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+        if (off) {
+
+            if (playing == false) {
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+                } else if (haspause == false) {
+                    tableSong.setRowSelectionInterval(row, row);
+                    MC.play(ListSong.get(row));
+                    File ftmp = new File(ListSong.get(row));
+                    String name = ftmp.getName().toString();
+                    txtNameSong.setText(name);
+                    playing = true;
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                } else {
+                    MC.resume();
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                    haspause = false;
+                    playing = true;
+                }
             } else {
-                MC.resume();
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
+                playing = false;
+                MC.Pause();
+                haspause = true;
+            }
+        } else if (playing == false) {
+            if (haspause == false) {
+                //play_onl();
+                int index = row;
+                if (index == -1) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+                } else {
+                    tableSong.setRowSelectionInterval(row, row);
+                    System.out.println("ok next");
+                    String bail = listURL.get(index);
+                    String name = tableSong.getValueAt(index, 1).toString();
+                    txtNameSong.setText(name);
+                    this.bai = index;
+
+                    System.err.println(bail);
+                    play_onl.play(bail);
+                    playing = true;
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                }
+            } else {
+                play_onl.resume();
                 btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
                 haspause = false;
                 playing = true;
@@ -710,7 +737,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         } else {
             btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
             playing = false;
-            MC.Pause();
+            play_onl.pause();
             haspause = true;
         }
     }//GEN-LAST:event_btn_rightActionPerformed
@@ -718,6 +745,9 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     private void btn_leftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_leftActionPerformed
         // TODO add your handling code here:
         MC.Stop();
+        playing = false;
+        haspause = false;
+        play_onl.Stop();
         int row = -1;
         System.out.println("lui " + bai);
         if (bai > 1) {
@@ -728,19 +758,51 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
             bai = row;
         }
         System.out.println("lui " + bai);
-        if (playing == false) {
-            if (row == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
-            } else if (haspause == false) {
-                tableSong.setRowSelectionInterval(row, row);
-                MC.play(ListSong.get(row));
-                File ftmp = new File(ListSong.get(row));
-                String name = ftmp.getName().toString();
-                txtNameSong.setText(name);
-                playing = true;
-                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+        if (off) {
+            if (playing == false) {
+                if (row == -1) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+                } else if (haspause == false) {
+                    tableSong.setRowSelectionInterval(row, row);
+                    MC.play(ListSong.get(row));
+                    File ftmp = new File(ListSong.get(row));
+                    String name = ftmp.getName().toString();
+                    txtNameSong.setText(name);
+                    playing = true;
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                } else {
+                    MC.resume();
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                    haspause = false;
+                    playing = true;
+                }
             } else {
-                MC.resume();
+                btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
+                playing = false;
+                MC.Pause();
+                haspause = true;
+            }
+        } else if (playing == false) {
+            if (haspause == false) {
+                //play_onl();
+                int index = row;
+                if (index == -1) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn bài hát", "Thông báo", 0);
+                } else {
+                    tableSong.setRowSelectionInterval(row, row);
+                    System.out.println("ok next");
+                    String bail = listURL.get(index);
+                    String name = tableSong.getValueAt(index, 1).toString();
+                    txtNameSong.setText(name);
+                    this.bai = index;
+
+                    System.err.println(bail);
+                    play_onl.play(bail);
+                    playing = true;
+                    btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
+                }
+            } else {
+                play_onl.resume();
                 btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Pause-icon.png")));
                 haspause = false;
                 playing = true;
@@ -748,7 +810,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         } else {
             btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
             playing = false;
-            MC.Pause();
+            play_onl.pause();
             haspause = true;
         }
     }//GEN-LAST:event_btn_leftActionPerformed
@@ -772,42 +834,42 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
         HttpURLConnectionExample http = new HttpURLConnectionExample();
         String playlist = null;
         String selected = selectPlaylist.getSelectedItem().toString();
-        if(selected.equals("Playlist Mới")){
-           playlist = "playlist-list";
-        }else if(selected.equals("Nhạc Trẻ")){
-           playlist = "nhac-tre";
-        }else if(selected.equals("Trữ Tình")){
+        if (selected.equals("Playlist Mới")) {
+            playlist = "playlist-list";
+        } else if (selected.equals("Nhạc Trẻ")) {
+            playlist = "nhac-tre";
+        } else if (selected.equals("Trữ Tình")) {
             playlist = "tru-tinh";
-        }else if(selected.equals("Cách Mạng")){
+        } else if (selected.equals("Cách Mạng")) {
             playlist = "cach-mang";
-        }else if(selected.equals("Tiền Chiến")){
+        } else if (selected.equals("Tiền Chiến")) {
             playlist = "tien-chien";
-        }else if(selected.equals("Nhạc Trịnh")){
+        } else if (selected.equals("Nhạc Trịnh")) {
             playlist = "nhac-trinh";
-        }else if(selected.equals("Thiếu Nhi")){
+        } else if (selected.equals("Thiếu Nhi")) {
             playlist = "thieu-nhi";
-        }else if(selected.equals("Rap Việt")){
+        } else if (selected.equals("Rap Việt")) {
             playlist = "rap-viet";
-        }else if(selected.equals("Rock Việt")){
+        } else if (selected.equals("Rock Việt")) {
             playlist = "rock-viet";
-        }else if(selected.equals("Âu, Mỹ")){
+        } else if (selected.equals("Âu, Mỹ")) {
             playlist = "au-my";
-        }else if(selected.equals("Hàn Quốc")){
+        } else if (selected.equals("Hàn Quốc")) {
             playlist = "han-quoc";
-        }else if(selected.equals("Nhạc Hoa")){
+        } else if (selected.equals("Nhạc Hoa")) {
             playlist = "nhac-hoa";
-        }else if(selected.equals("Nhạc Nhật")){
+        } else if (selected.equals("Nhạc Nhật")) {
             playlist = "nhac-nhat";
-        }else if(selected.equals("Không Lời")){
+        } else if (selected.equals("Không Lời")) {
             playlist = "khong-loi";
-        }else if(selected.equals("Nhạc Phim")){
+        } else if (selected.equals("Nhạc Phim")) {
             playlist = "nhac-phim";
-        }else if(selected.equals("Thể Loại Khác")){
+        } else if (selected.equals("Thể Loại Khác")) {
             playlist = "the-loai-khac";
         }
-        if(playlist.equals("trong")){
+        if (playlist.equals("trong")) {
             System.out.println("Select di");
-        }else{
+        } else {
             String jsonplaylist = null;
             try {
                 jsonplaylist = http.Get_playlist(playlist);
@@ -825,7 +887,7 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                     listURLPlaylist.add(obj2.get("LinkMV").toString());
                     tbmode.addRow(new Object[]{obj2.get("TenPlaylist").toString()});
                 }
-                
+
             } catch (Exception ex) {
                 Logger.getLogger(Player_Music.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -835,6 +897,10 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     private void tablePlaylistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePlaylistMouseClicked
         // TODO add your handling code here:
         off = false;
+        MC.Stop();
+        play_onl.Stop();
+        playing = false;
+        haspause = false;
         String url = listURLPlaylist.get(tablePlaylist.getSelectedRow());
         HttpURLConnectionExample http = new HttpURLConnectionExample();
         try {
@@ -849,18 +915,39 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
                 JSONObject obj2 = (JSONObject) array.get(i);
                 String link = obj2.get("location").toString();
                 int len2 = link.length();
-                String link2  = link.substring(2,len2-2);
-                String link3 = link2.replace("\\","");
+                String link2 = link.substring(2, len2 - 2);
+                String link3 = link2.replace("\\", "");
                 listURL.add(link3);
                 String text = obj2.get("title").toString();
                 int len = text.length();
-                String text2  = text.substring(2,len-2);
+                String text2 = text.substring(2, len - 2);
                 tbmode.addRow(new Object[]{i + 1, text2});
             }
         } catch (Exception ex) {
             Logger.getLogger(Player_Music.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_tablePlaylistMouseClicked
+
+    private void btn_volumeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_volumeActionPerformed
+        // TODO add your handling code here:
+        if (ok_volume == true) {
+            ok_volume = false;
+            btn_volume.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/mute3.png")));
+        } else {
+            ok_volume = true;
+            btn_volume.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/speaker.png")));
+        }
+    }//GEN-LAST:event_btn_volumeActionPerformed
+
+    private void btn_mixActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_mixActionPerformed
+        // TODO add your handling code here:
+        btn_mix.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/shuffle3.png")));
+    }//GEN-LAST:event_btn_mixActionPerformed
+
+    private void btn_repeatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_repeatActionPerformed
+        // TODO add your handling code here:
+        btn_repeat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/reload3.png")));
+    }//GEN-LAST:event_btn_repeatActionPerformed
 
     /**
      * @param args the command line arguments
@@ -921,15 +1008,16 @@ public class Player_Music extends javax.swing.JFrame implements BasicPlayerListe
     private javax.swing.JButton btn_right;
     private javax.swing.JButton btn_stop;
     private javax.swing.JButton btn_volume;
+    private javax.swing.JButton btndown;
     private javax.swing.JTextField inputNameSong_onl;
     private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;

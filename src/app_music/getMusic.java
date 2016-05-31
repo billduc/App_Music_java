@@ -64,6 +64,7 @@ public class getMusic {
             Player_Music.haspause = false;
             Player_Music.playing = false;
             Player_Music.btn_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Aqua-Play-icon.png")));
+            Player_Music.jProgressBar1.setValue(0);
         }
     }
 
@@ -110,23 +111,37 @@ public class getMusic {
             @Override
             public void run() {
                 super.run(); //To change body of generated methods, choose Tools | Templates.
-                int sec = (int) (time / 1000);
-                int d = sec / 100;
-                daphat = 0;
-                int pro = 1;
-                for(int i = daphat; i< sec ;++i){
+                int sec = (int) (time / 1000); 
+                Player_Music.jProgressBar1.setMaximum(sec);
+                Player_Music.jProgressBar1.setMinimum(0);
+                
+                for(int i = 0; i< sec ;++i){
                     try {
                         sleep(1000);
+                        Player_Music.jProgressBar1.setValue(i);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(getMusic.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    if (i == daphat)
-                    {
-                        Player_Music.jProgressBar1.setValue(pro);
-                        pro++;
-                        daphat+=d;
-                    }
+                    
                 }
+                    
+//                int d = sec / 100;
+//                daphat = 0;
+//                int pro = 1;
+//                for(int i = daphat; i< sec ;++i){
+//                    try {
+//                        sleep(1000);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(getMusic.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                    if (i == daphat)
+//                    {
+//                        Player_Music.jProgressBar1.setValue(pro);
+//                        pro++;
+//                        daphat+=d;
+//                    }
+//                }
+               
                
                 //this.setPriority(1);
             }
@@ -202,6 +217,7 @@ public class getMusic {
     private static long getDurationWithMp3Spi(File file) throws UnsupportedAudioFileException, IOException {
         Long microseconds;
         int mili;
+        
         AudioFileFormat fileFormat = AudioSystem.getAudioFileFormat(file);
         if (fileFormat instanceof TAudioFileFormat) {
             Map<?, ?> properties = ((TAudioFileFormat) fileFormat).properties();
